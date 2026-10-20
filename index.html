@@ -1,0 +1,581 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ganit Jadu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Mukta:wght@400;600;700&display=swap">
+<style>
+/* Layout: a graph-paper notebook. One column of paper cards; tricks are rows, practice is a big question, an answer slot and a chunky keypad. */
+:root{
+  --paper:#F1F6FC; --grid:#DCE6F3; --card:#FFFFFF; --ink:#1B2559; --muted:#56628D; --line:#C9D5E8;
+  --sun:#F5A00E; --on-accent:#14213D; --btn-bg:#1B2559; --btn-fg:#FFFFFF;
+  --c1:#FFC857; --c2:#5FD3C6; --c3:#B9A6FF; --c4:#FF9DB8;
+  --good:#12703B; --good-bg:#D8F3E3; --bad:#B42B25; --bad-bg:#FBDFDC; --hint-bg:#FFF1CC; --hint-ink:#4A3300;
+  --f-display:'Baloo 2','Mukta','Noto Sans Devanagari',system-ui,sans-serif;
+  --f-body:'Mukta','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12212A; --grid:#1B303B; --card:#1A2D38; --ink:#F2F5EE; --muted:#A3B6BE; --line:#2F4956;
+    --sun:#FFD34D; --btn-bg:#F2F5EE; --btn-fg:#12212A;
+    --good:#7BE0A4; --good-bg:#17402B; --bad:#FF9A92; --bad-bg:#4A2220; --hint-bg:#3F3714; --hint-ink:#FFE9A3;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12212A; --grid:#1B303B; --card:#1A2D38; --ink:#F2F5EE; --muted:#A3B6BE; --line:#2F4956;
+  --sun:#FFD34D; --btn-bg:#F2F5EE; --btn-fg:#12212A;
+  --good:#7BE0A4; --good-bg:#17402B; --bad:#FF9A92; --bad-bg:#4A2220; --hint-bg:#3F3714; --hint-ink:#FFE9A3;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.45;
+  padding-block:6px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-tap-highlight-color:transparent;
+}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px;min-width:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[role=button]:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.1;text-wrap:balance}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px;min-width:0}
+
+/* top bar */
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-top:8px}
+.brand h1{font-size:34px;font-weight:800;letter-spacing:-.01em}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.tools{display:flex;gap:8px;flex-shrink:0}
+.tbtn{background:var(--card);border:2px solid var(--line);border-radius:12px;min-height:40px;min-width:40px;padding:0 10px;font-weight:700;font-size:14px}
+.tbtn[aria-pressed="false"]{opacity:.55}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 10px;min-width:0}
+.stat b{display:block;font-family:var(--f-display);font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.lvbar{height:6px;border-radius:99px;background:var(--line);margin-top:6px;overflow:hidden}
+.lvbar i{display:block;height:100%;background:var(--sun);border-radius:99px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.big28{font-family:var(--f-display);font-weight:800;font-size:54px;line-height:.9;text-align:center;background:var(--c1);color:var(--on-accent);border-radius:16px;padding:12px 14px}
+.big28 small{display:block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.hero h2{font-size:22px;margin-bottom:4px}
+.hero p{margin:0;font-size:15px;color:var(--muted)}
+
+/* mode cards */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.mode{text-align:left;border:2px solid var(--ink);border-radius:18px;padding:14px 16px;background:var(--card);box-shadow:0 4px 0 var(--ink);display:flex;flex-direction:column;gap:2px;min-width:0}
+.mode:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.mode h3{font-size:21px}
+.mode span{font-size:14px;color:var(--muted)}
+.mode.daily{background:var(--c2);color:var(--on-accent)}
+.mode.daily span{color:var(--on-accent);opacity:.85}
+.mode.speed{background:var(--c4);color:var(--on-accent)}
+.mode.speed span{color:var(--on-accent);opacity:.85}
+.mode.daily,.mode.speed{border-color:var(--on-accent);box-shadow:0 4px 0 var(--on-accent)}
+
+.sec{font-size:22px;margin:4px 0 -4px}
+
+/* trick rows */
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 12px;cursor:pointer;min-width:0}
+.row:active{background:var(--grid)}
+.sym{width:58px;height:58px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:22px;color:var(--on-accent);letter-spacing:-.02em}
+.rmain{min-width:0}
+.rname{font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.1}
+.rtag{font-size:13.5px;color:var(--muted);line-height:1.25;margin-top:2px}
+.mbar{height:6px;border-radius:99px;background:var(--line);margin-top:7px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--sun)}
+.rside{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.mstate{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.mstate.m-pro{color:var(--good)}
+.mini{background:var(--btn-bg);color:var(--btn-fg);border:0;border-radius:10px;padding:6px 12px;font-weight:700;font-size:14px;min-height:34px}
+
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.badge{display:flex;gap:10px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 10px;min-width:0}
+.badge.lock{opacity:.5}
+.bg{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:14px;background:var(--c1);color:var(--on-accent)}
+.badge.lock .bg{background:var(--line);color:var(--muted)}
+.badge b{display:block;font-family:var(--f-display);font-size:15px;line-height:1.1}
+.badge small{display:block;font-size:12px;color:var(--muted);line-height:1.2;margin-top:2px}
+
+.foot{display:flex;justify-content:center;padding-top:6px}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;padding:8px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 22px;border-radius:14px;border:2px solid var(--btn-bg);background:var(--btn-bg);color:var(--btn-fg);font-family:var(--f-display);font-weight:700;font-size:19px}
+.btn.sun{background:var(--sun);border-color:var(--on-accent);color:var(--on-accent);box-shadow:0 3px 0 var(--on-accent)}
+.btn.sun:active{transform:translateY(2px);box-shadow:0 1px 0 var(--on-accent)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btns .btn{flex:1 1 150px}
+.back{align-self:flex-start;background:none;border:0;font-weight:700;color:var(--muted);padding:8px 4px;min-height:40px;font-size:16px}
+
+/* lesson */
+.lhead{display:flex;gap:14px;align-items:center}
+.lhead .sym{width:68px;height:68px;font-size:26px}
+.lhead h2{font-size:28px}
+.chip{display:inline-block;background:var(--hint-bg);color:var(--hint-ink);font-size:13px;font-weight:600;border-radius:99px;padding:3px 12px;margin-top:6px}
+.steps{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.step{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start}
+.step.pop{animation:pop .35s ease-out}
+@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.sn{width:34px;height:34px;border-radius:50%;background:var(--sun);color:var(--on-accent);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:18px;margin-top:2px}
+.stext{font-size:18px;min-width:0}
+.eq{margin-top:6px;background:var(--grid);border-radius:10px;padding:8px 12px;font-family:var(--f-display);font-weight:700;font-size:21px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.spk{background:none;border:2px solid var(--line);border-radius:10px;width:36px;height:36px;display:grid;place-items:center;color:var(--muted)}
+.spk svg{width:18px;height:18px}
+
+/* fingers */
+.hands{display:flex;justify-content:center;align-items:flex-end;gap:6px;height:84px;margin:6px 0}
+.hands .gapx{width:14px}
+.fing{width:clamp(22px,8.5vw,36px);border-radius:14px 14px 8px 8px;border:2px solid var(--ink);background:var(--card);padding:0;transition:height .2s;font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--ink);display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
+.fing.fold{background:var(--sun);color:var(--on-accent);border-color:var(--on-accent)}
+.fing.t{background:var(--c2);color:var(--on-accent);border-color:var(--on-accent)}
+.fing.o{background:var(--c4);color:var(--on-accent);border-color:var(--on-accent)}
+.freadout{text-align:center;font-family:var(--f-display);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
+.freadout .tn{background:var(--c2);color:var(--on-accent);border-radius:8px;padding:0 8px}
+.freadout .on{background:var(--c4);color:var(--on-accent);border-radius:8px;padding:0 8px}
+.fnote{text-align:center;font-size:14px;color:var(--muted);margin-top:4px}
+
+/* session */
+.sbar{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding-top:8px}
+.x{background:var(--card);border:2px solid var(--line);border-radius:12px;width:44px;height:44px;font-size:20px;font-weight:700;display:grid;place-items:center}
+.pbar{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--sun);border-radius:99px;transition:width .25s}
+.pbar.time i{transition:none;background:var(--c2)}
+.pbar.time.low i{background:var(--bad)}
+.sinfo{font-family:var(--f-display);font-weight:700;font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qcard{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;padding:18px 12px}
+.qlabel{font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.q{font-family:var(--f-display);font-weight:800;font-size:clamp(40px,13vw,64px);line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.ans{margin:0 auto;width:min(100%,260px);min-height:68px;border:3px dashed var(--ink);border-radius:16px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:44px;font-variant-numeric:tabular-nums;background:var(--card)}
+.ans.empty{color:var(--muted);opacity:.6}
+.ans.shake{animation:shake .35s}
+.ans.ok{border-style:solid;border-color:var(--good);color:var(--good);background:var(--good-bg)}
+.ans.no{border-style:solid;border-color:var(--bad);color:var(--bad);background:var(--bad-bg)}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.fb{min-height:52px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-align:center}
+.fb .msg{font-weight:700;font-size:18px;border-radius:12px;padding:8px 14px;max-width:100%}
+.fb .good{background:var(--good-bg);color:var(--good)}
+.fb .bad{background:var(--bad-bg);color:var(--bad)}
+.fb .hint{background:var(--hint-bg);color:var(--hint-ink);font-weight:600;font-size:17px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;width:100%;margin:0 auto}
+.key{min-height:58px;border-radius:14px;border:2px solid var(--ink);background:var(--card);box-shadow:0 3px 0 var(--ink);font-family:var(--f-display);font-weight:700;font-size:28px;color:var(--ink)}
+.key:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.key.ok{background:var(--sun);color:var(--on-accent);border-color:var(--on-accent);box-shadow:0 3px 0 var(--on-accent)}
+.key.fn{font-size:17px}
+.key:disabled{opacity:.45}
+.tools2{display:flex;gap:10px;justify-content:center}
+.tools2 .btn{min-height:44px;font-size:16px;padding:0 16px}
+
+/* result */
+.res{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding:24px 16px}
+.score{font-family:var(--f-display);font-weight:800;font-size:76px;line-height:1;font-variant-numeric:tabular-nums}
+.score small{font-size:30px;color:var(--muted)}
+.earn{background:var(--c1);color:var(--on-accent);border-radius:99px;padding:4px 18px;font-family:var(--f-display);font-weight:800;font-size:22px}
+.res p{margin:0;max-width:34ch;color:var(--muted);font-size:17px}
+
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--btn-bg);color:var(--btn-fg);border-radius:14px;padding:10px 18px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;max-width:calc(100% - 32px);text-align:center;z-index:30}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:20}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<script>
+(function(){
+'use strict';
+var KEY='ganit-jadu-v1';
+var $=function(s){return document.querySelector(s)};
+var app=$('#app');
+
+/* ---------- UI strings ---------- */
+var STR={
+ sub:{en:'Class 3 · Shakuntala Devi & Vedic maths',mr:'इयत्ता 3 री · शकुंतला देवी आणि वैदिक गणित'},
+ stars:{en:'Stars',mr:'तारे'}, streak:{en:'Day streak',mr:'सलग दिवस'}, level:{en:'Level',mr:'पातळी'},
+ heroT:{en:'Be a Human Computer',mr:'मानवी संगणक व्हा'},
+ heroP:{en:'In 1980 Shakuntala Devi multiplied two 13-digit numbers in her head. Vedic maths gives us short, clever tricks from India. Learn a trick, then beat the clock.',mr:'1980 मध्ये शकुंतला देवींनी दोन 13 अंकी संख्यांचा गुणाकार मनातल्या मनात केला. वैदिक गणितात भारतातील छोट्या, हुशार युक्त्या आहेत. युक्ती शिका आणि घड्याळाला हरवा.'},
+ sec:{en:'seconds',mr:'सेकंद'},
+ daily:{en:"Today's challenge",mr:'आजचे आव्हान'},
+ dailyS:{en:'5 mixed questions, +10 bonus stars',mr:'5 वेगवेगळे प्रश्न, +10 बोनस तारे'},
+ dailyD:{en:'Done today. Play again for fun.',mr:'आज पूर्ण झाले. मजेसाठी पुन्हा खेळा.'},
+ speed:{en:'60-second sprint',mr:'60 सेकंदांची शर्यत'},
+ speedS:{en:'How many can you solve? Best: ',mr:'किती सोडवाल? सर्वोत्तम: '},
+ tricks:{en:'Pick a trick',mr:'एक युक्ती निवडा'},
+ practice:{en:'Practice',mr:'सराव'},
+ mnew:{en:'New',mr:'नवीन'}, mlearn:{en:'Learning',mr:'शिकत आहे'}, mpro:{en:'Pro',mr:'तज्ज्ञ'},
+ badges:{en:'Badges',mr:'बॅज'},
+ back:{en:'Back',mr:'मागे'},
+ next:{en:'Next step',mr:'पुढची पायरी'},
+ startP:{en:'Start practice',mr:'सराव सुरू करा'},
+ check:{en:'Check',mr:'तपासा'}, hint:{en:'Hint',mr:'सूचना'},
+ tryAgain:{en:'Not yet. Read the hint and try again.',mr:'अजून नाही. सूचना वाचा आणि पुन्हा प्रयत्न करा.'},
+ ansIs:{en:'The answer is',mr:'उत्तर आहे'},
+ nextQ:{en:'Next question',mr:'पुढचा प्रश्न'},
+ qn:{en:'Question',mr:'प्रश्न'},
+ solved:{en:'solved',mr:'सोडवले'},
+ of:{en:'out of',mr:'पैकी'},
+ starsEarned:{en:'stars earned',mr:'तारे मिळाले'},
+ again:{en:'Play again',mr:'पुन्हा खेळा'},
+ home:{en:'Home',mr:'मुख्यपृष्ठ'},
+ m1:{en:'Fantastic! Shakuntala Devi would be proud.',mr:'अप्रतिम! शकुंतला देवींना अभिमान वाटला असता.'},
+ m2:{en:'Well done! A little more practice and you will be a pro.',mr:'छान! थोडा आणखी सराव आणि तुम्ही तज्ज्ञ व्हाल.'},
+ m3:{en:'Good try! Read the trick again and play once more.',mr:'चांगला प्रयत्न! युक्ती पुन्हा वाचा आणि पुन्हा खेळा.'},
+ reset:{en:'Reset progress',mr:'प्रगती पुसा'},
+ resetSure:{en:'Tap again to erase all progress',mr:'सर्व प्रगती पुसण्यासाठी पुन्हा दाबा'},
+ tapF:{en:'Tap any finger to fold it',mr:'बोट दुमडण्यासाठी त्यावर दाबा'},
+ tens:{en:'tens',mr:'दशक'}, ones:{en:'ones',mr:'एकक'},
+ timeUp:{en:"Time's up!",mr:'वेळ संपली!'},
+ levelUp:{en:'Level up! You are now level ',mr:'पातळी वाढली! आता पातळी '},
+ newBadge:{en:'New badge: ',mr:'नवीन बॅज: '}
+};
+var PRAISE={en:['Super!','Brilliant!','Shabash!','You got it!','Magic!'],mr:['शाबास!','छान!','अप्रतिम!','जादू!','खूपच छान!']};
+var LEVELS={en:['Number Explorer','Quick Thinker','Maths Wizard','Mind Calculator','Human Computer'],mr:['अंक शोधक','चटकन विचारवंत','गणित जादूगर','मनाचा कॅल्क्युलेटर','मानवी संगणक']};
+var BADGES=[
+ {id:'first',g:'1st',n:{en:'First spark',mr:'पहिली ठिणगी'},d:{en:'Solve your first question',mr:'पहिला प्रश्न सोडवा'}},
+ {id:'perfect',g:'100%',n:{en:'Perfect round',mr:'पूर्ण गुण'},d:{en:'Every answer right on the first try',mr:'सर्व उत्तरे पहिल्याच प्रयत्नात बरोबर'}},
+ {id:'combo',g:'×5',n:{en:'Fire five',mr:'सलग पाच'},d:{en:'5 correct in a row',mr:'सलग 5 बरोबर'}},
+ {id:'learner',g:'4/8',n:{en:'Trick collector',mr:'युक्ती संग्राहक'},d:{en:'Read 4 tricks to the end',mr:'4 युक्त्या शेवटपर्यंत वाचा'}},
+ {id:'daily',g:'Day',n:{en:'Daily hero',mr:'रोजचा हिरो'},d:{en:'Finish a daily challenge',mr:'आजचे आव्हान पूर्ण करा'}},
+ {id:'speed10',g:'10+',n:{en:'Quick thinker',mr:'चपळ विचार'},d:{en:'10 answers in one sprint',mr:'एका शर्यतीत 10 उत्तरे'}},
+ {id:'speed20',g:'20+',n:{en:'Human Computer',mr:'मानवी संगणक'},d:{en:'20 answers in one sprint',mr:'एका शर्यतीत 20 उत्तरे'}}
+];
+
+/* ---------- the tricks ---------- */
+function H(en,mr){return {en:en,mr:mr}}
+var TRICKS=[
+ {id:'break',c:'c1',sym:'10+',name:H('Break & Add','तोडा आणि जोडा'),tag:H('Add the tens first, then the ones','आधी दशक, मग एकक जोडा'),
+  chip:H('Mental maths · left to right','मानसिक गणित · डावीकडून उजवीकडे'),
+  steps:[
+   {t:H('Break both numbers into tens and ones.','दोन्ही संख्यांचे दशक आणि एकक वेगळे करा.'),eq:'47 = 40 + 7   ·   38 = 30 + 8'},
+   {t:H('Add the tens.','आधी दशक जोडा.'),eq:'40 + 30 = 70'},
+   {t:H('Add the ones.','आता एकक जोडा.'),eq:'7 + 8 = 15'},
+   {t:H('Put both answers together.','दोन्ही उत्तरे एकत्र करा.'),eq:'70 + 15 = 85'}]},
+ {id:'add9',c:'c2',sym:'+9',name:H('Add 9 Fast','9 झटपट जोडा'),tag:H('Add 10, then take away 1','10 जोडा, मग 1 वजा करा'),
+  chip:H('Mental maths · nearly 10','मानसिक गणित · 10 च्या जवळ'),
+  steps:[
+   {t:H('9 is just 1 less than 10.','9 म्हणजे 10 पेक्षा 1 कमी.'),eq:'9 = 10 − 1'},
+   {t:H('So add 10 first.','म्हणून आधी 10 जोडा.'),eq:'46 + 10 = 56'},
+   {t:H('Then take away 1.','मग 1 वजा करा.'),eq:'56 − 1 = 55'},
+   {t:H('It works for 19 and 29 too: add 20 or 30, then take away 1. To subtract 9, take away 10 and give 1 back.','19 आणि 29 साठीही चालते: 20 किंवा 30 जोडा, मग 1 वजा करा. 9 वजा करायचे असेल तर 10 वजा करा आणि 1 परत मिळवा.'),eq:'46 + 19 = 46 + 20 − 1 = 65'}]},
+ {id:'from100',c:'c3',sym:'100−',name:H('100 Minus Magic','100 वजा जादू'),tag:H('Subtract from 100 without borrowing','उसने न घेता 100 मधून वजा करा'),
+  chip:H('Nikhilam · all from 9, last from 10','निखिलम् · सर्व 9 मधून, शेवटचा 10 मधून'),
+  steps:[
+   {t:H('Take the number you subtract. Here it is 37.','वजा करायची संख्या घ्या. इथे ती 37 आहे.'),eq:'100 − 37'},
+   {t:H('Tens digit: subtract it from 9.','दशकाचा अंक 9 मधून वजा करा.'),eq:'9 − 3 = 6'},
+   {t:H('Ones digit: subtract it from 10.','एककाचा अंक 10 मधून वजा करा.'),eq:'10 − 7 = 3'},
+   {t:H('Write the two answers side by side. (Works when the ones digit is not 0.)','दोन्ही उत्तरे शेजारी शेजारी लिहा. (एककाचा अंक 0 नसेल तेव्हा चालते.)'),eq:'100 − 37 = 63'}]},
+ {id:'times5',c:'c4',sym:'×5',name:H('Times 5 Trick','5 ने गुणा'),tag:H('Multiply by 10, then take half','10 ने गुणा, मग निम्मे करा'),
+  chip:H('Mental maths · half of ten','मानसिक गणित · दहाचा निम्मा'),
+  steps:[
+   {t:H('5 is half of 10.','5 म्हणजे 10 चा निम्मा.'),eq:'5 = 10 ÷ 2'},
+   {t:H('Multiply the number by 10.','संख्येला 10 ने गुणा.'),eq:'14 × 10 = 140'},
+   {t:H('Now take half.','आता निम्मे करा.'),eq:'140 ÷ 2 = 70'},
+   {t:H('Shortcut: if the number is even, halve it first, then multiply by 10.','सोपा मार्ग: संख्या सम असेल तर आधी निम्मी करा, मग 10 ने गुणा.'),eq:'14 → 7 → 70'}]},
+ {id:'fingers9',c:'c1',sym:'×9',name:H('9 Finger Magic','9 ची बोटांची जादू'),tag:H('Your hands know the 9 times table','तुमचे हात 9 चा पाढा जाणतात'),fingers:true,
+  chip:H('Finger trick · tables 1 to 10','बोटांची युक्ती · पाढे 1 ते 10'),
+  steps:[
+   {t:H('Hold both hands up. Number your 10 fingers from 1 to 10, left to right.','दोन्ही हात समोर धरा. 10 बोटांना डावीकडून उजवीकडे 1 ते 10 क्रमांक द्या.')},
+   {t:H('To find 9 × n, fold down finger number n. Try it below.','9 × n काढण्यासाठी n वे बोट दुमडा. खाली करून पाहा.')},
+   {t:H('Fingers on the left of the folded one are the tens. Fingers on the right are the ones.','दुमडलेल्या बोटाच्या डावीकडची बोटे म्हणजे दशक, उजवीकडची बोटे म्हणजे एकक.')},
+   {t:H('Read the two numbers together. Fold finger 4: 3 fingers left, 6 fingers right, so 9 × 4 = 36.','दोन्ही अंक एकत्र वाचा. 4 वे बोट दुमडा: डावीकडे 3, उजवीकडे 6, म्हणून 9 × 4 = 36.'),eq:'9 × 4 = 36'}]},
+ {id:'double',c:'c2',sym:'×2',name:H('Double & Double','दुप्पट आणि दुप्पट'),tag:H('Break the number, double each part','संख्या तोडा, प्रत्येक भाग दुप्पट करा'),
+  chip:H('Shakuntala style · break and double','शकुंतला पद्धत · तोडा आणि दुप्पट करा'),
+  steps:[
+   {t:H('Break the number into tens and ones.','संख्येचे दशक आणि एकक वेगळे करा.'),eq:'36 = 30 + 6'},
+   {t:H('Double each part.','प्रत्येक भाग दुप्पट करा.'),eq:'30 × 2 = 60   ·   6 × 2 = 12'},
+   {t:H('Add the two answers.','दोन्ही उत्तरांची बेरीज करा.'),eq:'60 + 12 = 72'},
+   {t:H('For × 4, double the answer one more time.','4 ने गुणायचे असेल तर उत्तर आणखी एकदा दुप्पट करा.'),eq:'36 × 4 = 72 × 2 = 144'}]},
+ {id:'times11',c:'c3',sym:'×11',name:H('Times 11 Spread','11 ने गुणा'),tag:H('Spread the digits, add them in the middle','अंक दूर करा, मधे त्यांची बेरीज लिहा'),
+  chip:H('Urdhva-Tiryagbhyam · crosswise','ऊर्ध्वतिर्यग्भ्याम् · आडवे-उभे'),
+  steps:[
+   {t:H('Take a two-digit number, like 23.','दोन अंकी संख्या घ्या, उदा. 23.'),eq:'23 × 11'},
+   {t:H('Write its two digits far apart.','तिचे दोन अंक दूर दूर लिहा.'),eq:'2 _ 3'},
+   {t:H('Add the two digits and write the sum in the gap.','दोन अंकांची बेरीज करून मधल्या जागी लिहा.'),eq:'2 + 3 = 5   →   2 5 3'},
+   {t:H('The answer is 253. Here the digits add up to 9 or less. (If the sum is 10 or more, carry 1 to the left digit. That is a bigger challenge.)','उत्तर 253. इथे अंकांची बेरीज 9 किंवा त्यापेक्षा कमी आहे. (बेरीज 10 किंवा जास्त असेल तर 1 डावीकडच्या अंकात मिळवा. हे मोठे आव्हान आहे.)'),eq:'23 × 11 = 253'}]},
+ {id:'sq5',c:'c4',sym:'5²',name:H('Squares Ending in 5','5 वर संपणारे वर्ग'),tag:H('15 × 15, 25 × 25, 35 × 35 in a flash','15 × 15, 25 × 25, 35 × 35 एका झटक्यात'),
+  chip:H('Ekadhikena Purvena · one more than before','एकाधिकेन पूर्वेण · आधीपेक्षा एक जास्त'),
+  steps:[
+   {t:H('Look at the digit before the 5. For 35 it is 3.','5 च्या आधीचा अंक पाहा. 35 साठी तो 3 आहे.'),eq:'35 × 35'},
+   {t:H('Multiply that digit by the next number.','त्या अंकाला पुढच्या संख्येने गुणा.'),eq:'3 × 4 = 12'},
+   {t:H('The answer always ends with 25.','उत्तराच्या शेवटी नेहमी 25 येते.'),eq:'… 25'},
+   {t:H('Join the two parts.','दोन्ही भाग जोडा.'),eq:'35 × 35 = 12|25 = 1225'}]}
+];
+function trick(id){for(var i=0;i<TRICKS.length;i++)if(TRICKS[i].id===id)return TRICKS[i];return TRICKS[0]}
+
+/* ---------- question generators ---------- */
+function mk(seed){var a=seed>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function ri(r,a,b){return a+Math.floor(r()*(b-a+1))}
+var GEN={
+ 'break':function(r){var a=ri(r,21,68),b=ri(r,12,39),ta=a-a%10,tb=b-b%10,oa=a%10,ob=b%10,ans=a+b;
+  return {q:a+' + '+b,a:ans,h:H('Tens: '+ta+' + '+tb+' = '+(ta+tb)+'. Ones: '+oa+' + '+ob+' = '+(oa+ob)+'. Together: '+(ta+tb)+' + '+(oa+ob)+' = '+ans,'दशक: '+ta+' + '+tb+' = '+(ta+tb)+'. एकक: '+oa+' + '+ob+' = '+(oa+ob)+'. एकत्र: '+(ta+tb)+' + '+(oa+ob)+' = '+ans)}},
+ 'add9':function(r){
+  if(r()<0.7){var a=ri(r,12,80),k=[9,9,19,29][ri(r,0,3)],x=a+k+1,ans=a+k;
+   return {q:a+' + '+k,a:ans,h:H('Add '+(k+1)+' instead: '+a+' + '+(k+1)+' = '+x+'. Then take away 1: '+x+' − 1 = '+ans,(k+1)+' जोडा: '+a+' + '+(k+1)+' = '+x+'. मग 1 वजा करा: '+x+' − 1 = '+ans)}}
+  var b=ri(r,30,99),m=[9,9,19][ri(r,0,2)],y=b-m-1,an=b-m;
+  return {q:b+' − '+m,a:an,h:H('Take away '+(m+1)+': '+b+' − '+(m+1)+' = '+y+'. Then give 1 back: '+y+' + 1 = '+an,(m+1)+' वजा करा: '+b+' − '+(m+1)+' = '+y+'. मग 1 परत मिळवा: '+y+' + 1 = '+an)}},
+ 'from100':function(r){var n;do{n=ri(r,1,99)}while(n%10===0);var t=Math.floor(n/10),o=n%10,ans=100-n;
+  return {q:'100 − '+n,a:ans,h:H('Tens: 9 − '+t+' = '+(9-t)+'. Ones: 10 − '+o+' = '+(10-o)+'. Side by side: '+ans,'दशक: 9 − '+t+' = '+(9-t)+'. एकक: 10 − '+o+' = '+(10-o)+'. शेजारी शेजारी: '+ans)}},
+ 'times5':function(r){var n=ri(r,3,30),ans=n*5,q=r()<0.5?n+' × 5':'5 × '+n;
+  if(n%2===0)return {q:q,a:ans,h:H('Half of '+n+' is '+(n/2)+'. Then × 10 = '+ans,n+' चा निम्मा '+(n/2)+'. मग × 10 = '+ans)};
+  return {q:q,a:ans,h:H(n+' × 10 = '+(n*10)+'. Half of '+(n*10)+' is '+ans,n+' × 10 = '+(n*10)+'. '+(n*10)+' चा निम्मा '+ans)}},
+ 'fingers9':function(r){var n=ri(r,2,10),ans=9*n;
+  return {q:r()<0.5?'9 × '+n:n+' × 9',a:ans,h:H('Fold finger '+n+'. Left: '+(n-1)+' fingers = tens. Right: '+(10-n)+' fingers = ones. So '+ans,n+' वे बोट दुमडा. डावीकडे '+(n-1)+' = दशक. उजवीकडे '+(10-n)+' = एकक. म्हणजे '+ans)}},
+ 'double':function(r){
+  if(r()<0.55){var n=ri(r,13,49),t=n-n%10,o=n%10,ans=n*2;
+   return {q:n+' × 2',a:ans,h:H(t+' × 2 = '+(t*2)+'. '+o+' × 2 = '+(o*2)+'. Add: '+(t*2)+' + '+(o*2)+' = '+ans,t+' × 2 = '+(t*2)+'. '+o+' × 2 = '+(o*2)+'. बेरीज: '+(t*2)+' + '+(o*2)+' = '+ans)}}
+  var m=ri(r,12,34);return {q:m+' × 4',a:m*4,h:H('Double '+m+' = '+(m*2)+'. Double again: '+(m*2)+' × 2 = '+(m*4),m+' चे दुप्पट = '+(m*2)+'. पुन्हा दुप्पट: '+(m*2)+' × 2 = '+(m*4))}},
+ 'times11':function(r){var a=ri(r,1,8),b=ri(r,1,9-a),n=a*10+b,ans=n*11;
+  return {q:r()<0.5?n+' × 11':'11 × '+n,a:ans,h:H(a+' + '+b+' = '+(a+b)+'. Put it in the middle: '+a+' '+(a+b)+' '+b+' = '+ans,a+' + '+b+' = '+(a+b)+'. मधे लिहा: '+a+' '+(a+b)+' '+b+' = '+ans)}},
+ 'sq5':function(r){var m=ri(r,1,9),n=m*10+5,p=m*(m+1);
+  return {q:n+' × '+n,a:n*n,h:H(m+' × '+(m+1)+' = '+p+'. Then write 25: '+p+'25 = '+(n*n),m+' × '+(m+1)+' = '+p+'. मग 25 लिहा: '+p+'25 = '+(n*n))}}
+};
+function genQ(id,r){var q=GEN[id](r);q.id=id;return q}
+function randId(r){return TRICKS[Math.floor(r()*TRICKS.length)].id}
+
+/* ---------- state ---------- */
+function defaults(){return {lang:'en',stars:0,streak:0,lastDay:'',sound:true,hist:{},badges:[],learned:{},speedBest:0,dailyDone:''}}
+function load(){var d=defaults();try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);for(var k in o)d[k]=o[k]}}catch(e){}return d}
+var S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function t(k){return STR[k][S.lang]}
+function Lg(o){return o[S.lang]}
+function pad2(n){return n<10?'0'+n:''+n}
+function dayStr(d){return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
+function today(){return dayStr(new Date())}
+function yesterday(){var d=new Date();d.setDate(d.getDate()-1);return dayStr(d)}
+function level(){return Math.floor(S.stars/40)+1}
+function mastery(id){var h=S.hist[id]||[],n=h.length,s=0;for(var i=0;i<n;i++)s+=h[i];var pct=n?Math.round(s/n*100):0;var st=n<3?'new':(n>=5&&pct>=80?'pro':'learn');return {pct:pct,st:st,label:'m'+st}}
+function rec(id,ok){var h=S.hist[id]||(S.hist[id]=[]);h.push(ok?1:0);if(h.length>10)h.shift()}
+function hasBadge(id){return S.badges.indexOf(id)>=0}
+function award(id){if(hasBadge(id))return;S.badges.push(id);var b=BADGES.filter(function(x){return x.id===id})[0];toast(t('newBadge')+Lg(b.n));sfx('win')}
+
+/* ---------- sound, voice, toast, confetti ---------- */
+var AC=null;
+function actx(){try{if(!AC){var C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state==='suspended')AC.resume()}catch(e){}return AC}
+function tone(f,t0,d,type,v){var a=actx();if(!a||!S.sound)return;try{var o=a.createOscillator(),g=a.createGain(),st=a.currentTime+t0;o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(v||0.15,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+d);o.connect(g);g.connect(a.destination);o.start(st);o.stop(st+d+0.05)}catch(e){}}
+function sfx(k){if(k==='good'){tone(660,0,.12,'triangle');tone(880,.09,.22,'triangle')}else if(k==='bad'){tone(220,0,.22,'sawtooth',.07);tone(170,.12,.25,'sawtooth',.07)}else if(k==='win'){[523,659,784,1047].forEach(function(f,i){tone(f,i*.1,.25,'triangle',.14)})}else if(k==='tick'){tone(900,0,.05,'square',.04)}}
+function speak(txt){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt);u.lang=S.lang==='mr'?'mr-IN':'en-IN';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function qSpeech(q){var mr=S.lang==='mr';return q.replace(/\+/g,mr?' अधिक ':' plus ').replace(/−/g,mr?' वजा ':' minus ').replace(/×/g,mr?' गुणिले ':' times ')}
+var toastT=0;
+function toast(m){var el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('show')},2600)}
+function confetti(){try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;var c=$('#fx'),x=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;var cols=['#FFC857','#5FD3C6','#B9A6FF','#FF9DB8','#F5A00E'],ps=[];for(var i=0;i<90;i++)ps.push({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,s:6+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:cols[i%cols.length]});var t0=performance.now();(function f(now){x.clearRect(0,0,c.width,c.height);ps.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});if(now-t0<2200)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})(t0)}catch(e){}}
+
+/* ---------- views ---------- */
+var view='home',cur=null,sess=null,timer=0,resetArm=false;
+var SPK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+
+function topHTML(){return '<div class="top"><div class="brand"><h1>'+(S.lang==='mr'?'गणित जादू':'Ganit Jadu')+'</h1><p>'+t('sub')+'</p></div><div class="tools">'+
+ '<button class="tbtn" data-act="lang" aria-label="Language">'+(S.lang==='en'?'मराठी':'EN')+'</button>'+
+ '<button class="tbtn" data-act="sound" aria-pressed="'+S.sound+'" aria-label="Sound">'+(S.sound?'♪ On':'♪ Off')+'</button></div></div>'}
+
+function rowHTML(tr){var m=mastery(tr.id);return '<div class="row" data-act="open" data-id="'+tr.id+'" role="button" tabindex="0"><div class="sym" style="background:var(--'+tr.c+')">'+tr.sym+'</div><div class="rmain"><div class="rname">'+Lg(tr.name)+'</div><div class="rtag">'+Lg(tr.tag)+'</div><div class="mbar"><i style="width:'+m.pct+'%"></i></div></div><div class="rside"><span class="mstate m-'+m.st+'">'+t(m.label)+'</span><button class="mini" data-act="practice" data-id="'+tr.id+'">'+t('practice')+'</button></div></div>'}
+
+function viewHome(){
+  var lv=level(),li=Math.min(lv-1,4),prog=(S.stars%40)/40*100,doneToday=S.dailyDone===today();
+  var h=topHTML();
+  h+='<div class="stats"><div class="stat"><b>'+S.stars+'</b><span>'+t('stars')+'</span></div><div class="stat"><b>'+S.streak+'</b><span>'+t('streak')+'</span></div><div class="stat"><b>'+lv+'</b><span>'+t('level')+'</span><div class="lvbar"><i style="width:'+prog+'%"></i></div></div></div>';
+  h+='<div class="card hero"><div class="big28">28<small>'+t('sec')+'</small></div><div><h2>'+t('heroT')+'</h2><p>'+t('heroP')+'</p></div></div>';
+  h+='<div class="modes"><button class="mode daily" data-act="daily"><h3>'+t('daily')+'</h3><span>'+(doneToday?t('dailyD'):t('dailyS'))+'</span></button><button class="mode speed" data-act="speed"><h3>'+t('speed')+'</h3><span>'+t('speedS')+S.speedBest+'</span></button></div>';
+  h+='<h2 class="sec">'+t('tricks')+'</h2><div class="rows">'+TRICKS.map(rowHTML).join('')+'</div>';
+  h+='<h2 class="sec">'+t('badges')+' · '+Lg({en:LEVELS.en[li],mr:LEVELS.mr[li]})+'</h2><div class="badges">'+BADGES.map(function(b){var on=hasBadge(b.id);return '<div class="badge'+(on?'':' lock')+'"><div class="bg">'+b.g+'</div><div><b>'+Lg(b.n)+'</b><small>'+Lg(b.d)+'</small></div></div>'}).join('')+'</div>';
+  h+='<div class="foot"><button class="link" data-act="reset">'+(resetArm?t('resetSure'):t('reset'))+'</button></div>';
+  return h;
+}
+
+var HAND_H=[34,50,60,54,40,40,54,60,50,34];
+function fingersHTML(n){
+  var b='';
+  for(var i=1;i<=10;i++){
+    if(i===6)b+='<span class="gapx"></span>';
+    var cls='fing'+(i===n?' fold':(i<n?' t':' o')),ht=i===n?22:HAND_H[i-1];
+    b+='<button class="'+cls+'" data-act="finger" data-n="'+i+'" style="height:'+ht+'px" aria-label="'+i+'">'+i+'</button>';
+  }
+  var tn=n-1,on=10-n;
+  return '<div class="hands">'+b+'</div><div class="freadout">9 × '+n+' = <span class="tn">'+tn+'</span><span class="on">'+on+'</span> = '+(9*n)+'</div><div class="fnote">'+t('tapF')+' · <span class="tn" style="background:var(--c2);color:var(--on-accent);border-radius:6px;padding:0 6px">'+t('tens')+'</span> <span style="background:var(--c4);color:var(--on-accent);border-radius:6px;padding:0 6px">'+t('ones')+'</span></div>';
+}
+
+function viewTrick(){
+  var tr=trick(cur.id),shown=tr.steps.slice(0,cur.step+1),last=cur.step>=tr.steps.length-1;
+  var h='<button class="back" data-act="home">← '+t('back')+'</button>';
+  h+='<div class="lhead"><div class="sym" style="background:var(--'+tr.c+')">'+tr.sym+'</div><div><h2>'+Lg(tr.name)+'</h2><span class="chip">'+Lg(tr.chip)+'</span></div></div>';
+  h+='<div class="card"><ol class="steps">';
+  shown.forEach(function(s,i){
+    var fresh=cur.fresh&&i===cur.step;
+    h+='<li class="step'+(fresh?' pop':'')+'"><div class="sn">'+(i+1)+'</div><div class="stext">'+Lg(s.t)+(s.eq?'<div class="eq">'+s.eq+'</div>':'')+'</div><button class="spk" data-act="say" data-i="'+i+'" aria-label="Read aloud">'+SPK+'</button></li>';
+  });
+  h+='</ol>';
+  if(tr.fingers&&cur.step>=1)h+='<div id="fing" style="margin-top:14px">'+fingersHTML(cur.fn)+'</div>';
+  h+='</div>';
+  h+='<div class="btns">'+(last?'<button class="btn sun" data-act="practice" data-id="'+tr.id+'">'+t('startP')+'</button>':'<button class="btn sun" data-act="step">'+t('next')+'</button>')+(last?'':'<button class="btn ghost" data-act="practice" data-id="'+tr.id+'">'+t('practice')+'</button>')+'</div>';
+  cur.fresh=false;
+  return h;
+}
+
+function viewSession(){
+  var s=sess,q=s.qs[s.i],tr=trick(q.id),speed=s.mode==='speed';
+  var h='<div class="sbar"><button class="x" data-act="exit" aria-label="Close">✕</button>';
+  if(speed)h+='<div class="pbar time" id="tbar"><i style="width:100%"></i></div><div class="sinfo" id="tinfo">60</div>';
+  else h+='<div class="pbar"><i style="width:'+(s.i/s.qs.length*100)+'%"></i></div><div class="sinfo">'+(s.i+1)+' / '+s.qs.length+'</div>';
+  h+='</div>';
+  h+='<div class="card qcard"><div class="qlabel">'+(speed?Lg(tr.name):Lg(tr.name))+'</div><div class="q">'+q.q+' = ?</div><button class="spk" data-act="sayq" aria-label="Read aloud">'+SPK+'</button></div>';
+  h+='<div class="ans empty" id="ans">?</div>';
+  h+='<div class="fb" id="fb"></div>';
+  h+='<div class="pad" id="pad">';
+  for(var d=1;d<=9;d++)h+='<button class="key" data-act="key" data-k="'+d+'">'+d+'</button>';
+  h+='<button class="key fn" data-act="del" aria-label="Delete">⌫</button><button class="key" data-act="key" data-k="0">0</button><button class="key ok" data-act="ok" aria-label="'+t('check')+'">✓</button></div>';
+  if(!speed)h+='<div class="tools2"><button class="btn ghost" data-act="hint">'+t('hint')+'</button></div>';
+  return h;
+}
+
+function viewResult(){
+  var s=sess,r=s.result,h='';
+  h+='<div class="card res">';
+  if(s.mode==='speed'){
+    h+='<h2>'+t('timeUp')+'</h2><div class="score">'+r.correct+'</div><div>'+t('solved')+' · '+t('speedS').split('?')[1].replace(':','').trim()+' '+S.speedBest+'</div>';
+  }else{
+    h+='<div class="score">'+r.correct+'<small> / '+s.qs.length+'</small></div><div>'+t('solved')+'</div>';
+  }
+  h+='<div class="earn">+'+r.stars+' ★</div><p>'+r.msg+'</p></div>';
+  h+='<div class="btns"><button class="btn sun" data-act="again">'+t('again')+'</button><button class="btn ghost" data-act="home">'+t('home')+'</button></div>';
+  return h;
+}
+
+function render(){
+  if(view==='home')app.innerHTML=viewHome();
+  else if(view==='trick')app.innerHTML=viewTrick();
+  else if(view==='session')app.innerHTML=viewSession();
+  else app.innerHTML=viewResult();
+  try{window.scrollTo(0,0)}catch(e){}
+}
+
+/* ---------- sessions ---------- */
+function stopTimer(){clearInterval(timer);timer=0}
+function startSession(mode,id){
+  stopTimer();
+  var qs=[],seen={},r,n,g;
+  if(mode==='trick'){n=8;for(var i=0;i<n;i++){var tries=0,q;do{q=genQ(id,Math.random);tries++}while(seen[q.q]&&tries<25);seen[q.q]=1;qs.push(q)}}
+  else if(mode==='daily'){var d=new Date();r=mk(d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate());var ids=TRICKS.map(function(x){return x.id});for(var j=0;j<5;j++){var pick=ids.splice(Math.floor(r()*ids.length),1)[0];qs.push(genQ(pick,r))}}
+  else{qs.push(genQ(randId(Math.random),Math.random))}
+  sess={mode:mode,id:id,qs:qs,i:0,tries:0,hint:false,locked:false,input:'',correct:0,clean:0,stars:0,combo:0,best:0,await:false,end:0};
+  view='session';render();
+  if(mode==='speed'){sess.end=Date.now()+60000;timer=setInterval(tickTimer,200)}
+  actx();
+}
+function tickTimer(){
+  var s=sess;if(!s||s.mode!=='speed'){stopTimer();return}
+  var left=Math.max(0,s.end-Date.now()),b=$('#tbar'),inf=$('#tinfo');
+  if(b){b.firstChild.style.width=(left/600)+'%';if(left<10000)b.classList.add('low')}
+  if(inf)inf.textContent=Math.ceil(left/1000);
+  if(left<=0)finish();
+}
+function setAns(cls){var a=$('#ans');if(!a)return;a.className='ans'+(cls?' '+cls:(sess.input?'':' empty'));a.textContent=sess.input||'?'}
+function fb(kind,msg,extra){var f=$('#fb');if(!f)return;f.innerHTML=kind?'<div class="msg '+kind+'">'+msg+'</div>'+(extra||''):''}
+function lockPad(on){var p=$('#pad');if(!p)return;var b=p.querySelectorAll('button');for(var i=0;i<b.length;i++)b[i].disabled=on}
+
+function press(d){var s=sess;if(!s||s.locked||s.input.length>=4)return;s.input+=d;setAns();sfx('tick')}
+function del(){var s=sess;if(!s||s.locked)return;s.input=s.input.slice(0,-1);setAns()}
+function submit(){
+  var s=sess;if(!s||s.locked||!s.input)return;
+  var q=s.qs[s.i],v=parseInt(s.input,10),speed=s.mode==='speed';
+  if(v===q.a){
+    s.locked=true;lockPad(true);
+    var clean=s.tries===0&&!s.hint;rec(q.id,clean);
+    s.correct++;if(clean)s.clean++;s.combo++;s.best=Math.max(s.best,s.combo);
+    var g=speed?1:(clean?2:1);s.stars+=g;
+    setAns('ok');sfx('good');award('first');if(s.combo===5)award('combo');
+    var p=PRAISE[S.lang];fb('good',p[Math.floor(Math.random()*p.length)]+(speed?'':' +'+g+' ★'));
+    setTimeout(function(){if(sess===s)next()},speed?450:900);
+  }else{
+    s.tries++;s.combo=0;sfx('bad');
+    var a=$('#ans');if(a){a.classList.add('shake','no')}
+    if(speed){
+      s.locked=true;lockPad(true);rec(q.id,false);
+      setTimeout(function(){setAns('no')},0);
+      fb('bad',t('ansIs')+' '+q.a);setTimeout(function(){if(sess===s)next()},900);
+    }else if(s.tries===1){
+      s.hint=true;s.input='';
+      setTimeout(function(){setAns()},380);
+      fb('hint',Lg(q.h),'<div class="msg bad" style="font-size:15px">'+t('tryAgain')+'</div>');
+    }else{
+      s.locked=true;lockPad(true);s.await=true;rec(q.id,false);
+      fb('bad',t('ansIs')+' '+q.a+'.','<div class="msg hint" style="font-size:15px">'+Lg(q.h)+'</div><button class="btn sun" data-act="nextq">'+t('nextQ')+'</button>');
+    }
+  }
+}
+function next(){
+  var s=sess;if(!s||view!=='session')return;
+  if(s.mode==='speed'){if(s.end-Date.now()<=0){finish();return}s.qs.push(genQ(randId(Math.random),Math.random))}
+  s.i++;
+  if(s.mode!=='speed'&&s.i>=s.qs.length){finish();return}
+  s.tries=0;s.hint=false;s.locked=false;s.await=false;s.input='';
+  var keep=s.mode==='speed'?s.end:0;render();
+  if(keep&&!timer)timer=setInterval(tickTimer,200);
+}
+function touchStreak(){var d=today();if(S.lastDay===d)return;S.streak=(S.lastDay===yesterday())?S.streak+1:1;S.lastDay=d}
+function finish(){
+  var s=sess;if(!s)return;stopTimer();
+  var lvBefore=level(),stars=s.stars,msg,good=false;
+  if(s.mode==='speed'){
+    stars=s.correct;if(s.correct>S.speedBest)S.speedBest=s.correct;
+    if(s.correct>=10)award('speed10');if(s.correct>=20)award('speed20');
+    good=s.correct>=8;msg=s.correct>=10?t('m1'):(s.correct>=5?t('m2'):t('m3'));
+  }else{
+    var acc=s.correct/s.qs.length;
+    if(s.clean===s.qs.length){stars+=5;award('perfect')}
+    if(s.mode==='daily'&&S.dailyDone!==today()){stars+=10;S.dailyDone=today();award('daily')}
+    good=acc>=0.75;msg=acc>=0.9?t('m1'):(acc>=0.6?t('m2'):t('m3'));
+  }
+  S.stars+=stars;touchStreak();save();
+  s.result={correct:s.correct,stars:stars,msg:msg};
+  view='result';render();
+  if(good){confetti();sfx('win')}
+  if(level()>lvBefore)setTimeout(function(){toast(t('levelUp')+level())},600);
+}
+
+/* ---------- actions ---------- */
+function act(a,el){
+  switch(a){
+    case 'lang':S.lang=S.lang==='en'?'mr':'en';save();render();break;
+    case 'sound':S.sound=!S.sound;save();actx();sfx('good');render();break;
+    case 'open':cur={id:el.getAttribute('data-id'),step:0,fn:4,fresh:false};view='trick';render();break;
+    case 'step':var tr=trick(cur.id);if(cur.step<tr.steps.length-1){cur.step++;cur.fresh=true;sfx('tick');if(cur.step===tr.steps.length-1){S.learned[cur.id]=1;save();if(Object.keys(S.learned).length>=4){award('learner');save()}}render();try{window.scrollTo(0,document.body.scrollHeight)}catch(e){}}break;
+    case 'finger':cur.fn=parseInt(el.getAttribute('data-n'),10);var f=$('#fing');if(f)f.innerHTML=fingersHTML(cur.fn);sfx('tick');break;
+    case 'say':var st=trick(cur.id).steps[parseInt(el.getAttribute('data-i'),10)];speak(Lg(st.t));break;
+    case 'sayq':speak(qSpeech(sess.qs[sess.i].q));break;
+    case 'practice':startSession('trick',el.getAttribute('data-id'));break;
+    case 'daily':startSession('daily');break;
+    case 'speed':startSession('speed');break;
+    case 'home':resetArm=false;stopTimer();sess=null;view='home';render();break;
+    case 'exit':stopTimer();sess=null;view='home';render();break;
+    case 'again':startSession(sess.mode,sess.id);break;
+    case 'key':press(el.getAttribute('data-k'));break;
+    case 'del':del();break;
+    case 'ok':submit();break;
+    case 'hint':if(sess&&!sess.locked){sess.hint=true;fb('hint',Lg(sess.qs[sess.i].h))}break;
+    case 'nextq':next();break;
+    case 'reset':if(resetArm){S=defaults();save();resetArm=false}else resetArm=true;render();break;
+  }
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-act]');if(b)act(b.getAttribute('data-act'),b)});
+document.addEventListener('keydown',function(e){
+  if(view==='home'||view==='trick'){var r=e.target.closest&&e.target.closest('[role=button]');if(r&&e.target===r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();act(r.getAttribute('data-act'),r)}return}
+  if(view!=='session'||!sess)return;
+  if(e.key>='0'&&e.key<='9')press(e.key);
+  else if(e.key==='Backspace')del();
+  else if(e.key==='Enter'){e.preventDefault();if(sess.await)next();else submit()}
+});
+render();
+})();
+</script>
+
+</body></html>
